@@ -1,26 +1,40 @@
+// import necessary modules and components
 import { useState } from "react";
 import { useWeb3Contract, useMoralis } from "react-moralis";
 import styles from "@/styles/Home.module.css";
 import { ethers } from "ethers";
+import { useNotification } from "web3uikit";
+
+// import contract addresses and ABI
 const contractAddresses = require("../constants/contractaddress.json");
 const abi = require("../constants/Permissory-abi.json");
 
 export default function AddProperty() {
+  // initialize required state variables using useState hook
   const [tokenName, setTokenName] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("");
   const [tokenSupply, setTokenSupply] = useState("");
   const [intrestRate, setIntrestRate] = useState("");
   const [lockingPeriod, setLockingPeroiod] = useState("");
+
+  // retrieve chain ID and runContractFunction from Moralis
   const { chainId: hexChainId } = useMoralis();
   const { runContractFunction } = useWeb3Contract();
 
-  const chainId = parseInt(hexChainId);
+  // retrive dispatch function from web3uikit
+  const dispatch = useNotification();
+
+  const chainId = parseInt(hexChainId); // Convert the hexadecimal chain ID to an integer
 
   const permissoryAddresses =
-    chainId in contractAddresses ? contractAddresses[chainId][0] : null;
+    chainId in contractAddresses ? contractAddresses[chainId][0] : null; // Get the contract address for the given chain ID from the JSON file
+
+  // function handleSubmit for handling the event on the Add Property Button
 
   async function handleSubmit(event) {
-    event.preventDefault();
+    event.preventDefault(); //For preventing Default Bhaviour of Submit Form Button
+
+    // Call the smart contract function addProperty to add a new property with all necessary parameters
     await runContractFunction({
       params: {
         abi: abi,
@@ -34,15 +48,38 @@ export default function AddProperty() {
           _lockingPeriod: lockingPeriod,
         },
       },
-      onSuccess: (tx) => console.log(tx),
-      onError: (error) => console.log(error),
+      onSuccess: handleSuccess, // Set the success callback function
+      onError: (error) => console.log(error), // Set the error callback function
     });
+
+    // Reset the form inputs after submitting the form
     setTokenName("");
     setTokenSymbol("");
     setIntrestRate("");
     setLockingPeroiod("");
     setTokenSupply("");
   }
+
+  // function handleSuccess for handling after success code
+  async function handleSuccess(tx) {
+    const transactionReceipt = await tx.wait(1);
+    console.log(transactionReceipt);
+
+    // Extract the property ID and token name from the event emitted by the smart contract
+    const property_id = transactionReceipt.events[0].args[0].toString();
+    const property_token = transactionReceipt.events[0].args[2].toString();
+    
+    //Dispatching the Notification after Successfully Adding Property
+    dispatch({
+      type: "info",
+      message: `${property_token} Added to Property`,
+      title: "Network Notification",
+      position: "topL",
+      icon: "bell",
+    });
+  }
+
+  // Returning JSX for addProperty component
 
   return (
     <div>
