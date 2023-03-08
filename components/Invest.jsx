@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useWeb3Contract, useMoralis } from "react-moralis";
 import styles from "@/styles/Home.module.css";
 import { ethers } from "ethers";
+import { useNotification } from "web3uikit";
 
 // import contract addresses and ABI
 const contractAddresses = require("../constants/contractaddress.json");
@@ -18,6 +19,7 @@ export default function Invest() {
   // retrieve chain ID and runContractFunction from Moralis
   const { chainId: hexChainId } = useMoralis();
   const { runContractFunction } = useWeb3Contract();
+  const dispatch = useNotification();
 
   // Convert the hexadecimal chain ID to an integer
   const chainId = parseInt(hexChainId);
@@ -45,12 +47,40 @@ export default function Invest() {
       },
 
       onSuccess: (tx) => console.log(tx), // Handling successful transaction
-      onError: (error) => console.log(error), // Handling error during transaction
+      onError: handleError, // Handling error during transaction
     });
 
     // Resetting the propertyId and amount states after submission
     setAmount("");
     setPropertyId("");
+  }
+
+  async function handleError(error) {
+    console.log(error);
+    dispatch({
+      type: "info",
+      message: `investment failed`,
+      title: "Investment Failed",
+      position: "topL",
+      icon: "bell",
+    });
+  }
+
+  async function handleSuccess(tx) {
+    const transactionReceipt = await tx.wait(1);
+    console.log(transactionReceipt);
+
+    const property_id = transactionReceipt.events[0].args[0].toString();
+    const amount = transactionReceipt.events[0].args[2].toString();
+    const IntrestRate = transactionReceipt.events[0].args[4].toString();
+
+    dispatch({
+      type: "info",
+      message: ` Invested  ${amount} at the Rate of  ${IntrestRate}`,
+      title: " Investment Notification",
+      position: "topL",
+      icon: "bell",
+    });
   }
 
   // Returning JSX for Invest component

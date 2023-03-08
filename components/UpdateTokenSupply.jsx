@@ -8,7 +8,7 @@ import { useNotification } from "web3uikit";
 const contractAddresses = require("../constants/contractaddress.json");
 const abi = require("../constants/Permissory-abi.json");
 
-export default function updateTokenSupply() {
+export default function UpdateTokenSupply(props) {
   // initialize required state variables using useState hook
   const [propertyId, setPropertyId] = useState("");
   const [tokenSupply, setTokenSupply] = useState("");
@@ -48,6 +48,7 @@ export default function updateTokenSupply() {
     // Reset the form inputs after submitting the form
     setPropertyId("");
     setTokenSupply("");
+    props.setModal(false);
   }
 
   // function handleError for handling after error  code
@@ -91,7 +92,7 @@ export default function updateTokenSupply() {
         className="form"
         onSubmit={handleSubmit}
       >
-        <div className={styles.second_form_container}>
+        <div className={`${styles.second_form_container} test`}>
           <label htmlFor="propertyId" className={styles.property_label}>
             Property Id:
           </label>

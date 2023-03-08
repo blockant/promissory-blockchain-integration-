@@ -9,9 +9,9 @@ import { useNotification } from "web3uikit";
 const contractAddresses = require("../constants/contractaddress.json");
 const abi = require("../constants/Permissory-abi.json");
 
-export default function UpdateIntrest() {
+export default function UpdateIntrest(props) {
   // initialize required state variables using useState hook
-  const [propertyId, setPropertyId] = useState("");
+  const [propertyId, setPropertyId] = useState(props.editData.propertyId);
   const [intrestRate, setIntrestRate] = useState("");
 
   // retrieve chain ID and runContractFunction from Moralis
@@ -50,6 +50,7 @@ export default function UpdateIntrest() {
     // Reset the form inputs after submitting the form
     setPropertyId("");
     setIntrestRate("");
+    props.setModal(false);
   }
 
   // function handleError for handling after error  code
@@ -85,44 +86,47 @@ export default function UpdateIntrest() {
 
   // Returning JSX for UpdateIntrest component
   return (
-    <div>
-      <form key={"updateintrest"} className="form" onSubmit={handleSubmit}>
-        <div className={styles.second_form_container}>
-          <label htmlFor="propertyId" className={styles.property_label}>
-            Property Id:
-          </label>
-          <input
-            type="number"
-            id="propertyid"
-            name="propertyId"
-            className={styles.form_input}
-            value={propertyId}
-            onChange={(e) => setPropertyId(e.target.value)}
-          />
-        </div>
-        <div className={styles.second_form_container}>
-          <label htmlFor="intrestrate" className={styles.property_label}>
-            Intrest Rate:
-          </label>
-          <input
-            type="number"
-            id="intrestrate"
-            name="intrestRate"
-            className={styles.form_input}
-            value={intrestRate}
-            onChange={(e) => setIntrestRate(e.target.value)}
-          />
-        </div>
-        <div className={styles.btn_wrapper}>
-          <button
-            type="submit"
-            className={styles.property_btn}
-            onClick={handleSubmit}
-          >
-            Update IntrestRate
-          </button>
-        </div>
-      </form>
-    </div>
+    <>
+      <div>
+        <form key={"updateintrest"} className="form" onSubmit={handleSubmit}>
+          <div className={styles.second_form_container}>
+            <label htmlFor="propertyId" className={styles.property_label}>
+              Property Id:
+            </label>
+            <input
+              type="number"
+              id="propertyid"
+              name="propertyId"
+              disabled={props.editData ? true : false}
+              className={styles.form_input}
+              value={propertyId}
+              onChange={(e) => setPropertyId(e.target.value)}
+            />
+          </div>
+          <div className={styles.second_form_container}>
+            <label htmlFor="intrestrate" className={styles.property_label}>
+              Intrest Rate:
+            </label>
+            <input
+              type="number"
+              id="intrestrate"
+              name="intrestRate"
+              className={styles.form_input}
+              value={intrestRate}
+              onChange={(e) => setIntrestRate(e.target.value)}
+            />
+          </div>
+          <div className={styles.btn_wrapper}>
+            <button
+              type="submit"
+              className={styles.property_btn}
+              onClick={handleSubmit}
+            >
+              Update IntrestRate
+            </button>
+          </div>
+        </form>
+      </div>
+    </>
   );
 }

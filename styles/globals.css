@@ -109,3 +109,11 @@ a {
   font-family: monospace;
   font-weight: 600;
 }
+
+.test {
+  color: red;
+  font-size: 5rem;
+}
+.modal-dialog {
+  max-width: 900px !important;
+}

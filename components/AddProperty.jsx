@@ -4,12 +4,13 @@ import { useWeb3Contract, useMoralis } from "react-moralis";
 import styles from "@/styles/Home.module.css";
 import { ethers } from "ethers";
 import { useNotification } from "web3uikit";
+import { Button } from "react-bootstrap";
 
 // import contract addresses and ABI
 const contractAddresses = require("../constants/contractaddress.json");
 const abi = require("../constants/Permissory-abi.json");
 
-export default function AddProperty() {
+export default function AddProperty(props) {
   // initialize required state variables using useState hook
   const [tokenName, setTokenName] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("");
@@ -22,6 +23,7 @@ export default function AddProperty() {
   const { runContractFunction } = useWeb3Contract();
 
   // retrive dispatch function from web3uikit
+  const { setModal } = props;
   const dispatch = useNotification();
 
   const chainId = parseInt(hexChainId); // Convert the hexadecimal chain ID to an integer
@@ -58,6 +60,7 @@ export default function AddProperty() {
     setIntrestRate("");
     setLockingPeroiod("");
     setTokenSupply("");
+    setModal(false);
   }
 
   // function handleSuccess for handling after success code
@@ -68,7 +71,7 @@ export default function AddProperty() {
     // Extract the property ID and token name from the event emitted by the smart contract
     const property_id = transactionReceipt.events[0].args[0].toString();
     const property_token = transactionReceipt.events[0].args[2].toString();
-    
+
     //Dispatching the Notification after Successfully Adding Property
     dispatch({
       type: "info",
@@ -154,13 +157,13 @@ export default function AddProperty() {
           />
         </div>
         <div className={styles.btn_wrapper}>
-          <button
+          <Button
             type="submit"
             className={styles.property_btn}
             onClick={handleSubmit}
           >
             Add Property
-          </button>
+          </Button>
         </div>
       </form>
     </div>

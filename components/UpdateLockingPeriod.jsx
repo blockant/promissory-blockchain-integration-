@@ -8,7 +8,7 @@ import { useNotification } from "web3uikit";
 const contractAddresses = require("../constants/contractaddress.json");
 const abi = require("../constants/Permissory-abi.json");
 
-export default function UpdateLockingPeriod() {
+export default function UpdateLockingPeriod(props) {
   // initialize required state variables using useState hook
   const [propertyId, setPropertyId] = useState("");
   const [lockingPeriod, setLockingPeroiod] = useState("");
@@ -49,6 +49,7 @@ export default function UpdateLockingPeriod() {
     // Reset the form inputs after submitting the form
     setPropertyId("");
     setLockingPeroiod("");
+    props.setModal(false);
   }
 
   // function handleError for handling after error  code

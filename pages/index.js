@@ -8,19 +8,35 @@ import ShowProperties from "@/components/ShowProperties";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
+import { Button, Modal } from "react-bootstrap";
+// import "@/styles/globals.css";
+
+// // Bootstrap CSS
+// import "bootstrap/dist/css/bootstrap.min.css";
+// // Bootstrap Bundle JS
+// import "bootstrap/dist/js/bootstrap.bundle.min";
 
 // Importing contract addresses and ABI
 const contractAddresses = require("../constants/contractaddress.json");
 const abi = require("../constants/Permissory-abi.json");
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   // Initializing state to hold list of properties
   const [properties, setProperties] = useState([]);
+  const [show, setShow] = useState(false);
+  const [isloading, setisLoading] = useState(false);
 
   // Getting chainId, Web3 status, and account address from Moralis
-  const { chainId: hexChainId, isWeb3Enabled, account } = useMoralis();
+  const {
+    chainId: hexChainId,
+    isWeb3Enabled,
+    account,
+    web3,
+    Moralis,
+  } = useMoralis();
 
   // Getting contract function from Moralis
   const { runContractFunction } = useWeb3Contract();
@@ -31,10 +47,9 @@ export default function Home() {
   const permissoryAddresses =
     chainId in contractAddresses ? contractAddresses[chainId][0] : null;
 
-  console.log(account);
-
   // Function to get list of properties from contract
   async function GetProperty() {
+    setisLoading(true);
     //calling getProperties function on contract with necessary parameters
     const property = await runContractFunction({
       params: {
@@ -49,7 +64,7 @@ export default function Home() {
       },
       onError: (error) => console.log(error), // Logging error
     });
-
+    setisLoading(false);
     // Converting returned property string into array of objects
     const propertyString = String(property);
     const inputPropertyArray = propertyString.split(",");
@@ -81,6 +96,10 @@ export default function Home() {
   }, [isWeb3Enabled]);
 
   // Returning JSX for index  page
+
+  const handleClose = () => {
+    setShow(false);
+  };
   return (
     <>
       <Head>
@@ -94,16 +113,33 @@ export default function Home() {
 
       {isWeb3Enabled ? (
         <div>
+          <div className="text-center m-5 p-2">
+            <Button
+              onClick={() => {
+                setShow(true);
+              }}
+            >
+              Add Property
+            </Button>
+          </div>
           {/* Rendering ShowProperties component by passing properties as props */}
-          <ShowProperties properties={properties} />
-          {/* Rendering AddProperty Component */}
-          <AddProperty />
+          <ShowProperties properties={properties} isloading={isloading} />
         </div>
       ) : (
         <div className={styles.form_label_owner}>
           Kindly Connect Your Metamask
         </div>
       )}
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add Property</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {/* Rendering AddProperty Component */}
+          <AddProperty setModal={setShow} />
+        </Modal.Body>
+      </Modal>
     </>
   );
 }
