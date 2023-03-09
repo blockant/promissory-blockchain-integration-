@@ -373,7 +373,7 @@
   padding: 10px 20px;
   font-size: 1.2rem;
   border-radius: 10px;
-  background: linear-gradient(90deg, #0aef9b, #b15d5d00);
+  background: linear-gradient(90deg, #006a9d, #b15d5d00);
 }
 
 .btn_wrapper {
@@ -393,13 +393,14 @@
   font-weight: 600;
   font-size: 1.5rem;
   color: #0aef9b;
-  margin-left: 26px;
+
   align-items: center;
   position: fixed;
   width: 100%;
   /* margin: auto; */
-  z-index: 1111111111;
+  /* z-index: 1111111111; */
   /* height: 191px; */
+  background: #282e2e;
   top: 0;
 }
 .home_header > h1 {

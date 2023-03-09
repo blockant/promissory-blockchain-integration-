@@ -80,6 +80,10 @@ export default function AddProperty(props) {
       position: "topL",
       icon: "bell",
     });
+
+    props.setRefresh((state) => {
+      return !state;
+    });
   }
 
   // Returning JSX for addProperty component

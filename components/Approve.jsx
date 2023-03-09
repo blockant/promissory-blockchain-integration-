@@ -10,10 +10,9 @@ import { Button } from "react-bootstrap";
 const contractAddresses = require("../constants/contractaddress.json");
 const abi = require("../constants/Permissory-abi.json");
 
-export default function UpdateIntrest(props) {
+export default function Approve(props) {
   // initialize required state variables using useState hook
   const [propertyId, setPropertyId] = useState(props.editData.propertyId);
-  const [intrestRate, setIntrestRate] = useState("");
 
   // retrieve chain ID and runContractFunction from Moralis
   const { chainId: hexChainId } = useMoralis();
@@ -29,19 +28,18 @@ export default function UpdateIntrest(props) {
   const permissoryAddresses =
     chainId in contractAddresses ? contractAddresses[chainId][0] : null;
 
-  // function handleSubmit for handling the event on the UpdateIntrestRate Button
+  // function handleSubmit for handling the event on the approveProperty Button
   async function handleSubmit(event) {
     event.preventDefault();
 
-    // Calling the updateIntrestRate function on the smart contract with all necessary parameters
+    // Calling the approveProperty function on the smart contract with all necessary parameters
     await runContractFunction({
       params: {
         abi: abi,
         contractAddress: permissoryAddresses,
-        functionName: "updateInterestRate",
+        functionName: "approveProperty",
         params: {
           _propertyId: propertyId,
-          _interestRate: intrestRate,
         },
       },
       onSuccess: handleSuccess, // Set the success callback function
@@ -50,7 +48,7 @@ export default function UpdateIntrest(props) {
 
     // Reset the form inputs after submitting the form
     setPropertyId("");
-    setIntrestRate("");
+
     props.setModal(false);
   }
 
@@ -60,7 +58,7 @@ export default function UpdateIntrest(props) {
     dispatch({
       type: "info",
       message: `${message}`,
-      title: "Intrest Update Failed",
+      title: "Approval failed",
       position: "topL",
       icon: "bell",
     });
@@ -71,15 +69,11 @@ export default function UpdateIntrest(props) {
     const transactionReceipt = await tx.wait(1);
     console.log(transactionReceipt);
 
-    // Extract the property ID and intrest from the event emitted by the smart contract
-    const property_id = transactionReceipt.events[0].args[0].toString();
-    const intrest = transactionReceipt.events[0].args[1].toString();
-
     //Dispatching the Notification after Successfully updating Intrest
     dispatch({
       type: "info",
-      message: ` Intrest Updated to ${intrest}`,
-      title: "Intrest Update Notification",
+      message: ` Property Approved`,
+      title: "Approval Notification",
       position: "topL",
       icon: "bell",
     });
@@ -89,11 +83,11 @@ export default function UpdateIntrest(props) {
     });
   }
 
-  // Returning JSX for UpdateIntrest component
+  // Returning JSX for Approve component
   return (
     <>
       <div>
-        <form key={"updateintrest"} className="form" onSubmit={handleSubmit}>
+        <form key={"approve"} className="form" onSubmit={handleSubmit}>
           <div className={styles.second_form_container}>
             <label htmlFor="propertyId" className={styles.property_label}>
               Property Id:
@@ -108,26 +102,14 @@ export default function UpdateIntrest(props) {
               onChange={(e) => setPropertyId(e.target.value)}
             />
           </div>
-          <div className={styles.second_form_container}>
-            <label htmlFor="intrestrate" className={styles.property_label}>
-              Intrest Rate:
-            </label>
-            <input
-              type="number"
-              id="intrestrate"
-              name="intrestRate"
-              className={styles.form_input}
-              value={intrestRate}
-              onChange={(e) => setIntrestRate(e.target.value)}
-            />
-          </div>
+
           <div className={styles.btn_wrapper}>
             <Button
               type="submit"
               className={styles.property_btn}
               onClick={handleSubmit}
             >
-              Update IntrestRate
+              Approve
             </Button>
           </div>
         </form>

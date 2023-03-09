@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useWeb3Contract, useMoralis } from "react-moralis";
 import styles from "@/styles/Home.module.css";
 import { useNotification } from "web3uikit";
+import { Button } from "react-bootstrap";
 
 // import contract addresses and ABI
 const contractAddresses = require("../constants/contractaddress.json");
@@ -10,7 +11,7 @@ const abi = require("../constants/Permissory-abi.json");
 
 export default function UpdateLockingPeriod(props) {
   // initialize required state variables using useState hook
-  const [propertyId, setPropertyId] = useState("");
+  const [propertyId, setPropertyId] = useState(props.editData.propertyId);
   const [lockingPeriod, setLockingPeroiod] = useState("");
 
   // retrieve chain ID and runContractFunction from Moralis
@@ -81,6 +82,9 @@ export default function UpdateLockingPeriod(props) {
       position: "topL",
       icon: "bell",
     });
+    props.setRefresh((state) => {
+      return !state;
+    });
   }
 
   // Returning JSX for UpdateLockingPeriod component
@@ -118,13 +122,13 @@ export default function UpdateLockingPeriod(props) {
           />
         </div>
         <div className={styles.btn_wrapper}>
-          <button
+          <Button
             type="submit"
             className={styles.property_btn}
             onClick={handleSubmit}
           >
             Update Locking Period
-          </button>
+          </Button>
         </div>
       </form>
     </div>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useWeb3Contract, useMoralis } from "react-moralis";
 import styles from "@/styles/Home.module.css";
 import { useNotification } from "web3uikit";
+import { Button } from "react-bootstrap";
 
 // import contract addresses and ABI
 const contractAddresses = require("../constants/contractaddress.json");
@@ -10,7 +11,7 @@ const abi = require("../constants/Permissory-abi.json");
 
 export default function UpdateTokenSupply(props) {
   // initialize required state variables using useState hook
-  const [propertyId, setPropertyId] = useState("");
+  const [propertyId, setPropertyId] = useState(props.editData.propertyId);
   const [tokenSupply, setTokenSupply] = useState("");
 
   // retrieve chain ID and runContractFunction from Moralis
@@ -82,6 +83,9 @@ export default function UpdateTokenSupply(props) {
       position: "topL",
       icon: "bell",
     });
+    props.setRefresh((state) => {
+      return !state;
+    });
   }
 
   // Returning JSX for UpdateTokenSupply component
@@ -92,7 +96,7 @@ export default function UpdateTokenSupply(props) {
         className="form"
         onSubmit={handleSubmit}
       >
-        <div className={`${styles.second_form_container} test`}>
+        <div className={styles.second_form_container}>
           <label htmlFor="propertyId" className={styles.property_label}>
             Property Id:
           </label>
@@ -119,13 +123,13 @@ export default function UpdateTokenSupply(props) {
           />
         </div>
         <div className={styles.btn_wrapper}>
-          <button
+          <Button
             type="submit"
             className={styles.property_btn}
             onClick={handleSubmit}
           >
             Update TOkenSupply
-          </button>
+          </Button>
         </div>
       </form>
     </div>

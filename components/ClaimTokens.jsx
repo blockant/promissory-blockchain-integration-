@@ -10,10 +10,10 @@ import { Button } from "react-bootstrap";
 const contractAddresses = require("../constants/contractaddress.json");
 const abi = require("../constants/Permissory-abi.json");
 
-export default function UpdateIntrest(props) {
+export default function ClaimTokens(props) {
   // initialize required state variables using useState hook
   const [propertyId, setPropertyId] = useState(props.editData.propertyId);
-  const [intrestRate, setIntrestRate] = useState("");
+  const [tokenAmount, setTokenAmount] = useState("");
 
   // retrieve chain ID and runContractFunction from Moralis
   const { chainId: hexChainId } = useMoralis();
@@ -29,19 +29,19 @@ export default function UpdateIntrest(props) {
   const permissoryAddresses =
     chainId in contractAddresses ? contractAddresses[chainId][0] : null;
 
-  // function handleSubmit for handling the event on the UpdateIntrestRate Button
+  // function handleSubmit for handling the event on the claimTokens Button
   async function handleSubmit(event) {
     event.preventDefault();
 
-    // Calling the updateIntrestRate function on the smart contract with all necessary parameters
+    // Calling the claimPropertyTokens function on the smart contract with all necessary parameters
     await runContractFunction({
       params: {
         abi: abi,
         contractAddress: permissoryAddresses,
-        functionName: "updateInterestRate",
+        functionName: "claimPropertyTokens",
         params: {
           _propertyId: propertyId,
-          _interestRate: intrestRate,
+          _claimTokens: tokenAmount,
         },
       },
       onSuccess: handleSuccess, // Set the success callback function
@@ -50,7 +50,7 @@ export default function UpdateIntrest(props) {
 
     // Reset the form inputs after submitting the form
     setPropertyId("");
-    setIntrestRate("");
+    setTokenAmount("");
     props.setModal(false);
   }
 
@@ -60,7 +60,7 @@ export default function UpdateIntrest(props) {
     dispatch({
       type: "info",
       message: `${message}`,
-      title: "Intrest Update Failed",
+      title: "Token Claim Failed",
       position: "topL",
       icon: "bell",
     });
@@ -71,15 +71,11 @@ export default function UpdateIntrest(props) {
     const transactionReceipt = await tx.wait(1);
     console.log(transactionReceipt);
 
-    // Extract the property ID and intrest from the event emitted by the smart contract
-    const property_id = transactionReceipt.events[0].args[0].toString();
-    const intrest = transactionReceipt.events[0].args[1].toString();
-
-    //Dispatching the Notification after Successfully updating Intrest
+    //Dispatching the Notification after Successfully Claiming Tokens
     dispatch({
       type: "info",
-      message: ` Intrest Updated to ${intrest}`,
-      title: "Intrest Update Notification",
+      message: `  TokensClaimed `,
+      title: "TokenClaim Notification",
       position: "topL",
       icon: "bell",
     });
@@ -89,11 +85,11 @@ export default function UpdateIntrest(props) {
     });
   }
 
-  // Returning JSX for UpdateIntrest component
+  // Returning JSX for ClaimTokens component
   return (
     <>
       <div>
-        <form key={"updateintrest"} className="form" onSubmit={handleSubmit}>
+        <form key={"tokenvclaim"} className="form" onSubmit={handleSubmit}>
           <div className={styles.second_form_container}>
             <label htmlFor="propertyId" className={styles.property_label}>
               Property Id:
@@ -109,16 +105,16 @@ export default function UpdateIntrest(props) {
             />
           </div>
           <div className={styles.second_form_container}>
-            <label htmlFor="intrestrate" className={styles.property_label}>
-              Intrest Rate:
+            <label htmlFor="tokenamount" className={styles.property_label}>
+              TokenAmount
             </label>
             <input
               type="number"
-              id="intrestrate"
-              name="intrestRate"
+              id="tokenamount"
+              name="tokenamount"
               className={styles.form_input}
-              value={intrestRate}
-              onChange={(e) => setIntrestRate(e.target.value)}
+              value={tokenAmount}
+              onChange={(e) => setTokenAmount(e.target.value)}
             />
           </div>
           <div className={styles.btn_wrapper}>
@@ -127,7 +123,7 @@ export default function UpdateIntrest(props) {
               className={styles.property_btn}
               onClick={handleSubmit}
             >
-              Update IntrestRate
+              Claim Tokens
             </Button>
           </div>
         </form>

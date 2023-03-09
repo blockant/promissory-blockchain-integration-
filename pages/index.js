@@ -28,6 +28,9 @@ export default function Home() {
   const [properties, setProperties] = useState([]);
   const [show, setShow] = useState(false);
   const [isloading, setisLoading] = useState(false);
+  const [permissoryOwner, setPermissoryOwner] = useState("");
+  const [isOwner, setIsOwner] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   // Getting chainId, Web3 status, and account address from Moralis
   const {
@@ -48,6 +51,8 @@ export default function Home() {
     chainId in contractAddresses ? contractAddresses[chainId][0] : null;
 
   // Function to get list of properties from contract
+
+  console.log(`The owner of promissory is ${permissoryOwner}`);
   async function GetProperty() {
     setisLoading(true);
     //calling getProperties function on contract with necessary parameters
@@ -64,7 +69,23 @@ export default function Home() {
       },
       onError: (error) => console.log(error), // Logging error
     });
+    const owner = await runContractFunction({
+      params: {
+        abi: abi,
+        contractAddress: permissoryAddresses,
+        functionName: "promissoryOwner",
+        params: {},
+      },
+      onSuccess: (tx) => {
+        // Logging successful transaction
+        console.log(tx);
+      },
+      onError: (error) => console.log(error), // Logging error
+    });
     setisLoading(false);
+    setPermissoryOwner(owner);
+    setIsOwner(owner.toLowerCase() == account);
+
     // Converting returned property string into array of objects
     const propertyString = String(property);
     const inputPropertyArray = propertyString.split(",");
@@ -93,23 +114,24 @@ export default function Home() {
   // Calling GetProperty function using useEffect
   useEffect(() => {
     isWeb3Enabled && GetProperty();
-  }, [isWeb3Enabled]);
+  }, [isWeb3Enabled, refresh, account]);
 
   // Returning JSX for index  page
 
   const handleClose = () => {
     setShow(false);
+    setRefresh(false);
   };
   return (
     <>
       <Head>
-        <title>Create Next App</title>
+        <title>Promissory</title>
         <meta name="Permissory" content="Promissory" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* Displaying welcome message or Metamask connection prompt based on Web3 status */}
-      <div className={styles.form_label_owner}>Welcome to Permissory</div>
+      <div className={styles.form_label_owner}>Welcome to Promissory</div>
 
       {isWeb3Enabled ? (
         <div>
@@ -123,7 +145,13 @@ export default function Home() {
             </Button>
           </div>
           {/* Rendering ShowProperties component by passing properties as props */}
-          <ShowProperties properties={properties} isloading={isloading} />
+          <ShowProperties
+            setRefresh={setRefresh}
+            properties={properties}
+            isloading={isloading}
+            permissoryOwner={permissoryOwner}
+            isOwner={isOwner}
+          />
         </div>
       ) : (
         <div className={styles.form_label_owner}>
@@ -137,7 +165,11 @@ export default function Home() {
         </Modal.Header>
         <Modal.Body>
           {/* Rendering AddProperty Component */}
-          <AddProperty setModal={setShow} />
+          <AddProperty
+            setModal={setShow}
+            setRefresh={setRefresh}
+            refresh={refresh}
+          />
         </Modal.Body>
       </Modal>
     </>

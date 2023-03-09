@@ -4,6 +4,7 @@ import { useWeb3Contract, useMoralis } from "react-moralis";
 import styles from "@/styles/Home.module.css";
 import { ethers } from "ethers";
 import { useNotification } from "web3uikit";
+import { Button } from "react-bootstrap";
 
 // import contract addresses and ABI
 const contractAddresses = require("../constants/contractaddress.json");
@@ -88,7 +89,7 @@ export default function Invest() {
     <div>
       <form key={"invest"} className="form" onSubmit={handleSubmit}>
         <div className={styles.second_form_container}>
-          <label htmlFor="propertyis" className={styles.property_label}>
+          <label htmlFor="propertyid" className={styles.property_label}>
             Property Id:
           </label>
           <input
@@ -114,13 +115,13 @@ export default function Invest() {
           />
         </div>
         <div className={styles.btn_wrapper}>
-          <button
+          <Button
             type="submit"
             className={styles.property_btn}
             onClick={handleSubmit}
           >
             Invest
-          </button>
+          </Button>
         </div>
       </form>
     </div>
