@@ -2,95 +2,93 @@
 import { useState } from "react";
 import { useWeb3Contract, useMoralis } from "react-moralis";
 import styles from "@/styles/Home.module.css";
-import { ethers } from "ethers";
 import { useNotification } from "web3uikit";
 import { Button } from "react-bootstrap";
 
 // import contract addresses and ABI
 const contractAddresses = require("../constants/contractaddress.json");
 const abi = require("../constants/Permissory-abi.json");
-/**
- * Invest calculator
- */
-export default function Invest(props) {
+
+export default function ReturnInvestment(props) {
   // initialize required state variables using useState hook
   const [propertyId, setPropertyId] = useState(props.editData.propertyId);
-  const [amount, setAmount] = useState("");
+  const [investorAddress, setInvestorAddress] = useState("");
 
   // retrieve chain ID and runContractFunction from Moralis
   const { chainId: hexChainId } = useMoralis();
   const { runContractFunction } = useWeb3Contract();
+
+  // retrive dispatch function from web3uikit
   const dispatch = useNotification();
 
   // Convert the hexadecimal chain ID to an integer
   const chainId = parseInt(hexChainId);
 
+  // Get the contract address for the given chain ID from the JSON file
   const permissoryAddresses =
-    chainId in contractAddresses ? contractAddresses[chainId][0] : null; // Get the contract address for the given chain ID from the JSON file
+    chainId in contractAddresses ? contractAddresses[chainId][0] : null;
 
-  /**
-   * function handleSubmit for handling the event on the Invest Button
-   * @param event
-   *  */
+  // function handleSubmit for handling the event on the return Investment Button
   async function handleSubmit(event) {
-    event.preventDefault(); //For preventing Default Bhaviour of Submit Form Button
+    event.preventDefault();
 
-    // Calling the investInProperty function on the smart contract with all necessary parameters
+    // Calling the returnInvestment function on the smart contract with all necessary parameters
     await runContractFunction({
       params: {
         abi: abi,
         contractAddress: permissoryAddresses,
-        functionName: "investInProperty",
+        functionName: "returnInvestment",
         params: {
           _propertyId: propertyId,
-          _investmentAmount: amount,
+          _investor: investorAddress,
         },
       },
-
-      onSuccess: handleSuccess, // Handling successful transaction
-      onError: handleError, // Handling error during transaction
+      onSuccess: handleSuccess, // Set the success callback function
+      onError: handleError, // Set the error callback function
     });
-    props.setModal(false);
 
-    // Resetting the propertyId and amount states after submission
-    setAmount("");
+    // Reset the form inputs after submitting the form
     setPropertyId("");
+    setInvestorAddress("");
+    props.setModal(false);
   }
 
+  // function handleError for handling after error  code
   async function handleError(error) {
-    console.log(error);
+    console.log(error); //fetching message from the error object
     dispatch({
       type: "info",
-      message: `investment failed`,
-      title: "Investment Failed",
+      message: `InvestmentReturn failed`,
+      title: "InvestmentReturn  Notification",
       position: "topL",
       icon: "bell",
     });
   }
 
+  // function handleSuccess for handling after success code
   async function handleSuccess(tx) {
-    const transactionReceipt = await tx.wait(1);
+    const transactionReceipt = await tx.wait(1); //Waiting for 1 Block
     console.log(transactionReceipt);
 
+    //Dispatching the Notification after Successfully claiming Return
     dispatch({
       type: "info",
-      message: ` Invested ${amount} USDT  `,
-      title: " Investment Notification",
+      message: ` InvestmentReturn Success `,
+      title: "InvestmentReturn Notification",
       position: "topL",
       icon: "bell",
     });
-
     props.setRefresh((state) => {
       return !state;
     });
   }
 
-  // Returning JSX for Invest component
+  // Returning JSX for ReturnInvestment component
   return (
     <div>
-      <form key={"invest"} className="form" onSubmit={handleSubmit}>
+      <form key={"Return Investment"} className="form" onSubmit={handleSubmit}>
         <div className={styles.second_form_container}>
-          <label htmlFor="propertyid" className={styles.property_label}>
+          <label htmlFor="propertyId" className={styles.property_label}>
             Property Id:
           </label>
           <input
@@ -103,16 +101,16 @@ export default function Invest(props) {
           />
         </div>
         <div className={styles.second_form_container}>
-          <label htmlFor="amount" className={styles.property_label}>
-            Amount:
+          <label htmlFor="investorAddress" className={styles.property_label}>
+            Investor Adddress:
           </label>
           <input
-            type="number"
-            id="amount"
-            name="amount"
+            type="text"
+            id="investorAddress"
+            name="investorAddress"
             className={styles.form_input}
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            value={investorAddress}
+            onChange={(e) => setInvestorAddress(e.target.value)}
           />
         </div>
         <div className={styles.btn_wrapper}>
@@ -121,7 +119,7 @@ export default function Invest(props) {
             className={styles.property_btn}
             onClick={handleSubmit}
           >
-            Invest
+            Return Investment
           </Button>
         </div>
       </form>

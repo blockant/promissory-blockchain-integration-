@@ -9,12 +9,6 @@ import { useMoralis, useWeb3Contract } from "react-moralis";
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { Button, Modal } from "react-bootstrap";
-// import "@/styles/globals.css";
-
-// // Bootstrap CSS
-// import "bootstrap/dist/css/bootstrap.min.css";
-// // Bootstrap Bundle JS
-// import "bootstrap/dist/js/bootstrap.bundle.min";
 
 // Importing contract addresses and ABI
 const contractAddresses = require("../constants/contractaddress.json");

@@ -11,10 +11,19 @@ import { Tokens } from "@web3uikit/icons";
 import { Checkmark } from "@web3uikit/icons";
 import { Cross } from "@web3uikit/icons";
 import { BsPercent } from "react-icons/bs";
+import { MdOutlinePendingActions } from "react-icons/md";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { useNotification } from "web3uikit";
 import Approve from "./Approve";
 import ClaimTokens from "./ClaimTokens";
+import Invest from "./Invest";
+import ClaimInvestment from "./ClaimInvestment";
+import ClaimReturn from "./ClaimReturn";
+import ReturnInvestment from "./ReturnInvestment";
+import { Key } from "@web3uikit/icons";
+import { AlertTriangle } from "@web3uikit/icons";
+
+
 
 const contractAddresses = require("../constants/contractaddress.json");
 const abi = require("../constants/Permissory-abi.json");
@@ -48,6 +57,8 @@ export default function ShowProperties(props) {
             {!props.isOwner && <th>Status</th>}
             {props.isOwner ? <th>Approve </th> : <th>Invest</th>}
             {!props.isOwner && <th>Claim</th>}
+            {!props.isOwner && <th>ClaimInvestment</th>}
+            {!props.isOwner && <th>ReturnInvestment</th>}
           </tr>
         </thead>
         <tbody>
@@ -94,7 +105,7 @@ export default function ShowProperties(props) {
                           }}
                           variant="primary"
                         >
-                          <BsPercent></BsPercent>
+                          <BsPercent fontSize="20px"></BsPercent>
                         </Button>
                       </span>
                     ) : null}
@@ -124,7 +135,7 @@ export default function ShowProperties(props) {
                     <div>
                       {
                         {
-                          1: "Not Approved",
+                          1: <AlertTriangle fontSize="30px" color="red" />,
                           2: <Checkmark fontSize="20px" color="#06f73a" />,
                           3: "Banned",
                         }[obj.status]
@@ -155,11 +166,26 @@ export default function ShowProperties(props) {
                 ) : (
                   <td>
                     {account !== obj.owner.toLowerCase() && obj.status == 2 ? (
-                      <Button>Invest</Button>
+                      <Button
+                        onClick={() => {
+                          setType(7);
+                          setEditData(obj);
+                          setShow(true);
+                        }}
+                      >
+                        Invest
+                      </Button>
                     ) : account == obj.owner.toLowerCase() ? (
-                      <div>Own Property</div>
+                      <Button>
+                        <Key fontSize="20px" />
+                      </Button>
                     ) : (
-                      <div>Pending Approval</div>
+                      <Button>
+                        <MdOutlinePendingActions
+                          fontSize="20px"
+                          color="red"
+                        ></MdOutlinePendingActions>
+                      </Button>
                     )}
                   </td>
                 )}
@@ -173,7 +199,7 @@ export default function ShowProperties(props) {
                           setShow(true);
                         }}
                       >
-                        Claim Investment
+                        Claim Return
                       </Button>
                     ) : (
                       <Button
@@ -184,6 +210,56 @@ export default function ShowProperties(props) {
                         }}
                       >
                         Claim Tokens
+                      </Button>
+                    )}
+                  </td>
+                )}
+                {!props.isOwner && (
+                  <td>
+                    {account == obj.owner.toLowerCase() ? (
+                      <Button
+                        onClick={() => {
+                          setType(8);
+                          setEditData(obj);
+                          setShow(true);
+                        }}
+                      >
+                        Claim Investment
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          setType("");
+                          setEditData(obj);
+                          setShow(true);
+                        }}
+                      >
+                        <Cross fontSize="10px" />
+                      </Button>
+                    )}
+                  </td>
+                )}
+                {!props.isOwner && (
+                  <td>
+                    {account == obj.owner.toLowerCase() ? (
+                      <Button
+                        onClick={() => {
+                          setType(9);
+                          setEditData(obj);
+                          setShow(true);
+                        }}
+                      >
+                        Return Investment
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          setType("");
+                          setEditData(obj);
+                          setShow(true);
+                        }}
+                      >
+                        <Cross fontSize="10px" />
                       </Button>
                     )}
                   </td>
@@ -202,8 +278,11 @@ export default function ShowProperties(props) {
                 2: "UpdateLocking Period",
                 3: "Update TokenSupply",
                 4: "Approve",
-                5: "claim Investment",
-                6: "Claim Tokens",
+                5: "claim Return",
+                6: "claim Tokens",
+                7: "Invest",
+                8: "claim Investment",
+                9: "Return Investment",
               }[type]
             }
           </Modal.Title>
@@ -239,8 +318,36 @@ export default function ShowProperties(props) {
                   setRefresh={props.setRefresh}
                 />
               ),
+              5: (
+                <ClaimReturn
+                  setModal={setShow}
+                  editData={editData}
+                  setRefresh={props.setRefresh}
+                />
+              ),
               6: (
                 <ClaimTokens
+                  setModal={setShow}
+                  editData={editData}
+                  setRefresh={props.setRefresh}
+                />
+              ),
+              7: (
+                <Invest
+                  setModal={setShow}
+                  editData={editData}
+                  setRefresh={props.setRefresh}
+                />
+              ),
+              8: (
+                <ClaimInvestment
+                  setModal={setShow}
+                  editData={editData}
+                  setRefresh={props.setRefresh}
+                />
+              ),
+              9: (
+                <ReturnInvestment
                   setModal={setShow}
                   editData={editData}
                   setRefresh={props.setRefresh}
