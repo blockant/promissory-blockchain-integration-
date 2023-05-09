@@ -1,7 +1,7 @@
 import styles from "@/styles/Home.module.css";
 import { Button, ButtonGroup, Spinner, Table } from "react-bootstrap";
 import { Modal } from "react-bootstrap";
-import UpdateIntrest from "./UpdateIntrest";
+import UpdateIntrest from "./UpdateInterest";
 import { useState } from "react";
 import UpdateLockingPeriod from "./UpdateLockingPeriod";
 import UpdateTokenSupply from "./UpdateTokenSupply";
@@ -23,10 +23,8 @@ import ReturnInvestment from "./ReturnInvestment";
 import { Key } from "@web3uikit/icons";
 import { AlertTriangle } from "@web3uikit/icons";
 
-
-
 const contractAddresses = require("../constants/contractaddress.json");
-const abi = require("../constants/Permissory-abi.json");
+const abi = require("../constants/Promissory-abi.json");
 
 // This  component  receives props as input.
 // The props parameter is an object that contains properties passed by the parent component to this component.
@@ -228,11 +226,11 @@ export default function ShowProperties(props) {
                       </Button>
                     ) : (
                       <Button
-                        onClick={() => {
-                          setType("");
-                          setEditData(obj);
-                          setShow(true);
-                        }}
+                      // onClick={() => {
+                      //   // setType("");
+                      //   setEditData(obj);
+                      //   setShow(true);
+                      // }}
                       >
                         <Cross fontSize="10px" />
                       </Button>
@@ -253,11 +251,11 @@ export default function ShowProperties(props) {
                       </Button>
                     ) : (
                       <Button
-                        onClick={() => {
-                          setType("");
-                          setEditData(obj);
-                          setShow(true);
-                        }}
+                      // onClick={() => {
+                      //   setType("");
+                      //   setEditData(obj);
+                      //   setShow(true);
+                      // }}
                       >
                         <Cross fontSize="10px" />
                       </Button>

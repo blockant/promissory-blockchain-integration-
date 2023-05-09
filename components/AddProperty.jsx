@@ -8,7 +8,7 @@ import { Button } from "react-bootstrap";
 
 // import contract addresses and ABI
 const contractAddresses = require("../constants/contractaddress.json");
-const abi = require("../constants/Permissory-abi.json");
+const abi = require("../constants/Promissory-abi.json");
 
 export default function AddProperty(props) {
   // initialize required state variables using useState hook
