@@ -21,7 +21,7 @@ import { Key } from "@web3uikit/icons";
 import { AlertTriangle } from "@web3uikit/icons";
 
 const contractAddresses = require("../constants/contractaddress.json");
-const abi = require("../constants/Permissory-abi.json");
+const abi = require("../constants/Promissory-abi.json");
 
 // This  component  receives props as input.
 // The props parameter is an object that contains properties passed by the parent component to this component.

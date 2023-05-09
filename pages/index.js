@@ -12,7 +12,7 @@ import { Button, Modal } from "react-bootstrap";
 
 // Importing contract addresses and ABI
 const contractAddresses = require("../constants/contractaddress.json");
-const abi = require("../constants/Permissory-abi.json");
+const abi = require("../constants/Promissory-abi.json");
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const inter = Inter({ subsets: ["latin"] });
