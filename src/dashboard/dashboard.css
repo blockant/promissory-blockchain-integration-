@@ -80,7 +80,9 @@ body {
 
 html,
 body {
-  background: transparent linear-gradient(0deg, rgba(198, 199, 216, 0) 0%, #c6c7d8 100%) 0% 0% no-repeat padding-box;
+  background: transparent
+    linear-gradient(0deg, rgba(198, 199, 216, 0) 0%, #c6c7d8 100%) 0% 0%
+    no-repeat padding-box;
 }
 
 ::-webkit-scrollbar {
@@ -180,7 +182,14 @@ body {
   padding-top: 4rem;
   padding-bottom: 4rem;
   border-radius: 10px;
-  background: transparent linear-gradient(122deg, rgba(239, 241, 244, 0) 0%, rgba(183, 163, 201, 0.4470588235) 52%, #724393 100%) 0% 0% no-repeat padding-box;
+  background: transparent
+    linear-gradient(
+      122deg,
+      rgba(239, 241, 244, 0) 0%,
+      rgba(183, 163, 201, 0.4470588235) 52%,
+      #724393 100%
+    )
+    0% 0% no-repeat padding-box;
 }
 
 .login-form-content,
@@ -253,7 +262,11 @@ body {
   width: 100px !important;
   height: 100vh;
   position: relative;
-  background: linear-gradient(180deg, rgb(45, 40, 62) 0%, rgb(77, 68, 96) 100%) !important;
+  background: linear-gradient(
+    180deg,
+    rgb(45, 40, 62) 0%,
+    rgb(77, 68, 96) 100%
+  ) !important;
 }
 .menu-bar .hamburger-icon,
 .offcanvas .hamburger-icon {
@@ -302,7 +315,11 @@ body {
   .menu-bar-desktop {
     width: 100% !important;
     height: auto;
-    background: linear-gradient(90deg, rgb(45, 40, 62) 0%, rgb(77, 68, 96) 100%) !important;
+    background: linear-gradient(
+      90deg,
+      rgb(45, 40, 62) 0%,
+      rgb(77, 68, 96) 100%
+    ) !important;
     flex-direction: row !important;
     justify-content: space-between;
   }
@@ -392,7 +409,9 @@ body {
 
 html,
 body {
-  background: transparent linear-gradient(0deg, rgba(198, 199, 216, 0) 0%, #c6c7d8 100%) 0% 0% no-repeat padding-box;
+  background: transparent
+    linear-gradient(0deg, rgba(198, 199, 216, 0) 0%, #c6c7d8 100%) 0% 0%
+    no-repeat padding-box;
 }
 
 ::-webkit-scrollbar {
@@ -492,7 +511,14 @@ body {
   padding-top: 4rem;
   padding-bottom: 4rem;
   border-radius: 10px;
-  background: transparent linear-gradient(122deg, rgba(239, 241, 244, 0) 0%, rgba(183, 163, 201, 0.4470588235) 52%, #724393 100%) 0% 0% no-repeat padding-box;
+  background: transparent
+    linear-gradient(
+      122deg,
+      rgba(239, 241, 244, 0) 0%,
+      rgba(183, 163, 201, 0.4470588235) 52%,
+      #724393 100%
+    )
+    0% 0% no-repeat padding-box;
 }
 
 .login-form-content,
@@ -581,7 +607,7 @@ body {
 .bx-shdw {
   box-shadow: 0px 0px 12px rgba(207, 214, 224, 0.4);
   -webkit-clip-path: inset(0px -12px 0px 1px);
-          clip-path: inset(0px -12px 0px 1px);
+  clip-path: inset(0px -12px 0px 1px);
 }
 
 .dets-in-labl-val {
@@ -666,7 +692,7 @@ body {
   width: 100%;
   height: 50px;
   -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
   border-radius: 6px;
 }
 .my-properties-data .list-group .lh-10 {
@@ -692,10 +718,18 @@ body {
   }
 }
 @media screen and (max-width: 1085px) {
-  .my-properties-data .list-group .list-group-item .minimum-value-data .min-val {
+  .my-properties-data
+    .list-group
+    .list-group-item
+    .minimum-value-data
+    .min-val {
     font-size: 10px !important;
   }
-  .my-properties-data .list-group .list-group-item .minimum-value-data .min-txt {
+  .my-properties-data
+    .list-group
+    .list-group-item
+    .minimum-value-data
+    .min-txt {
     font-size: 8px !important;
   }
   .my-properties-data .list-group .list-group-item .tokens-data .tokens-val {
@@ -706,10 +740,18 @@ body {
   }
 }
 @media screen and (max-width: 992px) {
-  .my-properties-data .list-group .list-group-item .minimum-value-data .min-val {
+  .my-properties-data
+    .list-group
+    .list-group-item
+    .minimum-value-data
+    .min-val {
     font-size: 13px !important;
   }
-  .my-properties-data .list-group .list-group-item .minimum-value-data .min-txt {
+  .my-properties-data
+    .list-group
+    .list-group-item
+    .minimum-value-data
+    .min-txt {
     font-size: 10px !important;
   }
   .my-properties-data .list-group .list-group-item .tokens-data .tokens-val {
@@ -720,10 +762,18 @@ body {
   }
 }
 @media screen and (max-width: 835px) {
-  .my-properties-data .list-group .list-group-item .minimum-value-data .min-val {
+  .my-properties-data
+    .list-group
+    .list-group-item
+    .minimum-value-data
+    .min-val {
     font-size: 10px !important;
   }
-  .my-properties-data .list-group .list-group-item .minimum-value-data .min-txt {
+  .my-properties-data
+    .list-group
+    .list-group-item
+    .minimum-value-data
+    .min-txt {
     font-size: 8px !important;
   }
   .my-properties-data .list-group .list-group-item .tokens-data .tokens-val {
@@ -758,4 +808,8 @@ body {
   .content-right .my-properties-data .list-group {
     height: auto !important;
   }
-}/*# sourceMappingURL=dashboard.css.map */
+} /*# sourceMappingURL=dashboard.css.map */
+
+.Hahnn {
+  margin: 0 !important;
+}
