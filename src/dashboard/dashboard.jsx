@@ -1,17 +1,26 @@
 import "./dashboard.css";
 import { useState, useEffect } from "react";
+
 import { ethers } from "ethers";
 import abi from "../../constants/abi.json";
 import { ConnectButton } from "web3uikit";
+import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 import { useMoralis, useWeb3Contract } from "react-moralis";
+import {
+  setConnectedStatus,
+  setCurrentAccount,
+  setWeb3Provider,
+  resetConnected,
+} from "../store/connectedSilce";
 
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Dashboard() {
-  const [currentAccount, setCurrentAccount] = useState("");
   const [isConnected, setIsConnected] = useState(false);
 
   const [userProperties, setUserProperties] = useState([]);
+  const dispatch = useDispatch();
   const properties = useSelector((state) => state.property);
   console.log("STATE FROM Redux inside Dashboard", properties);
 
@@ -143,9 +152,13 @@ export default function Dashboard() {
         (property) => property.owner.toLowerCase() === account
       );
       console.log(filteredProperties);
+      dispatch(setConnectedStatus(true));
+      dispatch(setCurrentAccount(account));
+      // dispatch(setWeb3Provider(web3));
       setUserProperties(filteredProperties);
     } else {
       setUserProperties([]);
+      dispatch(resetConnected());
     }
   }, [account, properties]);
 
@@ -816,7 +829,22 @@ export default function Dashboard() {
                                   </span>
                                 </div>
                                 <div>
-                                  <img src="/progress-stat.PNG" alt="..." />
+                                  <div style={{ width: 30, height: 30 }}>
+                                    <CircularProgressbar
+                                      value={60}
+                                      text={`${60}%`}
+                                      counterClockwise={true}
+                                      styles={{
+                                        path: {
+                                          stroke: `rgba(123, 41, 169, ${
+                                            60 / 100
+                                          })`,
+                                        },
+                                      }}
+                                    />
+                                  </div>
+
+                                  {/* <img src="/progress-stat.PNG" alt="..." /> */}
                                 </div>
                               </div>
                             </div>

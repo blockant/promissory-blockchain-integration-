@@ -18,6 +18,8 @@ import Login from "./login/login";
 import Register from "./register/register";
 import Dashboard from "./dashboard/dashboard";
 import MarketPlace from "./marketPlace/marketPlace";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor } from "./store";
 
 const router = createBrowserRouter([
   {
@@ -49,12 +51,12 @@ const router = createBrowserRouter([
 ]);
 
 const Main = (props) => {
-  console.log("HI from Demo");
+  console.log("From main Page");
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("FRom From Home page ");
+    console.log("Inside Main page Effect ");
     dispatch(fetchPropertyData());
     // fetchData();
   }, []);
@@ -72,6 +74,8 @@ const Main = (props) => {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <Main />
+    <PersistGate loading={null} persistor={persistor}>
+      <Main />
+    </PersistGate>
   </Provider>
 );

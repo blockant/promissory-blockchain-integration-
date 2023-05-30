@@ -14,6 +14,16 @@ export default function Home() {
   const [register, showRegister] = useState(false);
 
   const properties = useSelector((state) => state.property);
+  const account = useSelector((state) => state.connected);
+
+  // async function Data() {
+  //   const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //   console.log("PROVider of windowwww", provider);
+  //   const signer = provider.getSigner();
+  //   const currentAccount = await signer.getAddress();
+  //   console.log("ACCOUTN", currentAccount);
+  // }
+  // Data();
   console.log("Property State from  Redux inside Home Page ", properties);
 
   // async function fetchData() {
