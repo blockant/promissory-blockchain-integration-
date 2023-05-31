@@ -10,15 +10,16 @@ import { useMoralis, useWeb3Contract } from "react-moralis";
 import {
   setConnectedStatus,
   setCurrentAccount,
-  setWeb3Provider,
   resetConnected,
 } from "../store/connectedSilce";
 
 import { useDispatch, useSelector } from "react-redux";
+import { decryptJsonWallet } from "@ethersproject/json-wallets";
 
 export default function Dashboard() {
   const [isConnected, setIsConnected] = useState(false);
-
+  const [transactions, setTransactions] = useState([]);
+  const [userTransactions, setUserTransactions] = useState([]);
   const [userProperties, setUserProperties] = useState([]);
   const dispatch = useDispatch();
   const properties = useSelector((state) => state.property);
@@ -31,48 +32,34 @@ export default function Dashboard() {
     web3,
     Moralis,
   } = useMoralis();
+  const iface = new ethers.utils.Interface(abi);
 
   console.log("Web3 Enabled", isWeb3Enabled);
   console.log("ACCOUNT", account);
   console.log("PROVIDER", web3);
 
-  // async function fetchData() {
-  //   const provider = new ethers.providers.JsonRpcProvider(
-  //     "https://polygon-mumbai.g.alchemy.com/v2/KFGiZ9X78dt4jBe16IjpjVXbhlPzuSx8"
-  //   );
-  //   const contractAddress = "0x88803A6B977eFfD33d6D5Fc032D9666Fde1D2E04";
-  //   const contract = new ethers.Contract(contractAddress, abi, provider);
-  //   try {
-  //     const property = await contract.getProperties();
+  function formatTimestamp(timestamp) {
+    const date = new Date(timestamp * 1000);
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    const year = date.getFullYear().toString();
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
 
-  //     console.log("PROPERTIES", property);
-  //     const propertyString = String(property);
-  //     const inputPropertyArray = propertyString.split(",");
+    return `${month}/${day}/${year} ${hours}:${minutes}`;
+  }
+  async function fetchData() {
+    const provider = new ethers.providers.EtherscanProvider("maticmum");
+    const contractAddress = "0x88803A6B977eFfD33d6D5Fc032D9666Fde1D2E04";
 
-  //     const resultPropertyArray = [];
-
-  //     for (let i = 0; i < inputPropertyArray.length; i += 8) {
-  //       const obj = {
-  //         propertyId: inputPropertyArray[i],
-  //         owner: inputPropertyArray[i + 1],
-  //         tokenName: inputPropertyArray[i + 2],
-  //         tokenSymbol: inputPropertyArray[i + 3],
-  //         tokenSupply: inputPropertyArray[i + 4],
-  //         interestRate: inputPropertyArray[i + 5],
-  //         lockingPeriod: inputPropertyArray[i + 6],
-  //         status: inputPropertyArray[i + 7],
-  //       };
-  //       resultPropertyArray.push(obj);
-  //     }
-
-  //     console.log(resultPropertyArray);
-
-  //     // setting state with it resultPropertyArray
-  //     setProperties(resultPropertyArray);
-  //   } catch (err) {
-  //     console.log("Error from fetchoign dat", err);
-  //   }
-  // }
+    try {
+      const txHistory = await provider.getHistory(contractAddress);
+      console.log("Transaction History ", txHistory);
+      setTransactions(txHistory);
+    } catch (err) {
+      console.log("Error getiing History", err);
+    }
+  }
 
   // const connectToMetaMask = async () => {
   //   console.log("INSEDE THE FUNCTION");
@@ -137,27 +124,35 @@ export default function Dashboard() {
   //   }
   // });
 
-  // useEffect(() => {
-  //   console.log("Hello From Second Efffwect");
-  //   fetchData();
-  //   // return () => {
-  //   //   // Clean up account change subscription when component unmounts
-  //   //   window.ethereum.removeAllListeners("accountsChanged");
-  //   // };
-  // }, []);
   useEffect(() => {
-    console.log("Indise Effect from Dashboard");
+    console.log("Hello From first Effect");
+    fetchData();
+  }, [properties]);
+
+  useEffect(() => {
+    console.log("Inside Effect from Dashboard");
     if (account !== null) {
       const filteredProperties = properties.filter(
         (property) => property.owner.toLowerCase() === account
       );
       console.log(filteredProperties);
+      if (transactions) {
+        const addressTransactions = transactions.filter((transaction) => {
+          return (
+            transaction.from.toLowerCase() == account ||
+            (transaction.to && transaction.to.toLowerCase() == account)
+          );
+        });
+        console.log("ADDRESS SPECIFIC TRNASACTIONS ", addressTransactions);
+        setUserTransactions(addressTransactions);
+      }
+
       dispatch(setConnectedStatus(true));
       dispatch(setCurrentAccount(account));
-      // dispatch(setWeb3Provider(web3));
       setUserProperties(filteredProperties);
     } else {
       setUserProperties([]);
+      setUserTransactions([]);
       dispatch(resetConnected());
     }
   }, [account, properties]);
@@ -595,22 +590,27 @@ export default function Dashboard() {
                     </button>
                   </div>
                   <div className="transactions-list">
-                    <ul className="list-group list-group-horizontal-md mb-1">
-                      <li className="list-group-item flex-fill">#ID848489</li>
-                      <li className="list-group-item flex-fill">
-                        Transaction Name
-                      </li>
-                      <li className="list-group-item flex-fill">
-                        Mm/dd/yyyy Hh:Mm
-                      </li>
-                      <li className="list-group-item flex-fill">
-                        Reference Number
-                      </li>
-                      <li className="list-group-item flex-fill text-success">
-                        Transaction Status
-                      </li>
-                    </ul>
-                    <ul className="list-group list-group-horizontal-md mb-1">
+                    {userTransactions.length > 0 &&
+                      userTransactions.map((tx) => (
+                        <ul className="list-group list-group-horizontal-md mb-1">
+                          <li className="list-group-item flex-fill">
+                            {tx.blockNumber}
+                          </li>
+                          <li className="list-group-item flex-fill">
+                            {iface.parseTransaction({ data: tx.data }).name}
+                          </li>
+                          <li className="list-group-item flex-fill">
+                            {formatTimestamp(tx.timestamp)}
+                          </li>
+                          <li className="list-group-item flex-fill">
+                            {tx.hash}
+                          </li>
+                          <li className="list-group-item flex-fill text-success">
+                            Transaction Status
+                          </li>
+                        </ul>
+                      ))}
+                    {/* <ul className="list-group list-group-horizontal-md mb-1">
                       <li className="list-group-item flex-fill">#ID848489</li>
                       <li className="list-group-item flex-fill">
                         Transaction Name
@@ -699,7 +699,7 @@ export default function Dashboard() {
                       <li className="list-group-item flex-fill text-success">
                         Transaction Status
                       </li>
-                    </ul>
+                    </ul> */}
                   </div>
                 </div>
               </div>
@@ -787,7 +787,7 @@ export default function Dashboard() {
                                 <div className="irr me-3">
                                   <span className="pri-clr fw-500">IRR: </span>
                                   <span className="black-clr fw-500">
-                                    {property.interestRate}%
+                                    {property.interestRate / 100}%
                                   </span>
                                 </div>
                                 <div className="coc">
@@ -822,7 +822,11 @@ export default function Dashboard() {
                               <div className="content-right d-flex align-items-center justify-content-end bg-white">
                                 <div className="d-flex flex-column align-items-end sec-clr me-1">
                                   <span className="fs-13 fw-500 black-clr tokens-val">
-                                    {property.tokenSupply}
+                                    {(
+                                      (property.tokenSupply -
+                                        property.investment) /
+                                      10 ** 18
+                                    ).toFixed(18)}
                                   </span>
                                   <span className="fs-10 fw-500 text-end sec-clr lh-10 tokens-txt">
                                     TOKENS LEFT
@@ -831,13 +835,27 @@ export default function Dashboard() {
                                 <div>
                                   <div style={{ width: 30, height: 30 }}>
                                     <CircularProgressbar
-                                      value={60}
-                                      text={`${60}%`}
+                                      value={
+                                        ((property.tokenSupply -
+                                          property.investment) /
+                                          property.tokenSupply) *
+                                        100
+                                      }
+                                      text={`${
+                                        ((property.tokenSupply -
+                                          property.investment) /
+                                          property.tokenSupply) *
+                                        100
+                                      }%`}
                                       counterClockwise={true}
                                       styles={{
                                         path: {
                                           stroke: `rgba(123, 41, 169, ${
-                                            60 / 100
+                                            (((property.tokenSupply -
+                                              property.investment) /
+                                              property.tokenSupply) *
+                                              100) /
+                                            100
                                           })`,
                                         },
                                       }}

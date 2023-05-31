@@ -39,8 +39,15 @@ export const fetchPropertyData = createAsyncThunk(
         }
 
         console.log("From inside Thunk", resultPropertyArray);
-        return resultPropertyArray;
-        // setting state with it resultPropertyArray
+
+        const propertiesWithInvestments = await Promise.all(
+          resultPropertyArray.map(async (property) => {
+            const investment = await getInvestment(property.propertyId);
+            return { ...property, investment };
+          })
+        );
+
+        return propertiesWithInvestments;
       } catch (err) {
         console.log("Error from fetching  data", err);
         return [];
@@ -52,3 +59,20 @@ export const fetchPropertyData = createAsyncThunk(
     return data;
   }
 );
+
+// Function to fetch investments for a specific property
+const getInvestment = async (propertyId) => {
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(
+      "https://polygon-mumbai.g.alchemy.com/v2/KFGiZ9X78dt4jBe16IjpjVXbhlPzuSx8"
+    );
+    const contractAddress = "0x88803A6B977eFfD33d6D5Fc032D9666Fde1D2E04";
+    const contract = new ethers.Contract(contractAddress, abi, provider);
+    const investment = await contract.totalInvestedAmount(propertyId);
+
+    return investment.toString();
+  } catch (error) {
+    console.log("Error fetching investment:", error);
+    return null;
+  }
+};

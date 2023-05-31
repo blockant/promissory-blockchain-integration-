@@ -17,9 +17,7 @@ const connectedSlice = createSlice({
     setCurrentAccount: (state, action) => {
       state.currentAccount = action.payload;
     },
-    setWeb3Provider: (state, action) => {
-      state.web3Provider = action.payload;
-    },
+
     resetConnected: () => initialState,
   },
 });

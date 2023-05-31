@@ -313,7 +313,7 @@ export default function Home() {
                             <div class="content-right fs-12 d-flex align-items-center">
                               <div class="d-flex flex-column align-items-end me-2">
                                 <span class="irr-percent fw-500 pri-clr">
-                                  {property.interestRate}%
+                                  {property.interestRate / 100}%
                                 </span>
                                 <span class="coc-percent sec-clr"> 9.9% </span>
                               </div>
@@ -337,7 +337,11 @@ export default function Home() {
                             <div class="content-right d-flex align-items-center">
                               <div class="d-flex flex-column align-items-end grey-clr me-1">
                                 <span class="fw-500 fs-12">
-                                  {property.tokenSupply}
+                                  {(
+                                    (property.tokenSupply -
+                                      property.investment) /
+                                    10 ** 18
+                                  ).toFixed(18)}
                                 </span>
                                 <span class="fw-100 fs-10 text-end">
                                   TOKENS LEFT
