@@ -5,6 +5,7 @@ import { ethers } from "ethers";
 import { useState, useEffect } from "react";
 import { Outlet, Link } from "react-router-dom";
 import abi from "../../constants/abi.json";
+import { CircularProgressbar } from "react-circular-progressbar";
 
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPropertyData } from "../store/thunks";
@@ -340,18 +341,46 @@ export default function Home() {
                                   {(
                                     (property.tokenSupply -
                                       property.investment) /
-                                    10 ** 18
-                                  ).toFixed(18)}
+                                    10 ** 9
+                                  ).toFixed(9)}
                                 </span>
-                                <span class="fw-100 fs-10 text-end">
-                                  TOKENS LEFT
-                                </span>
+                                <b>
+                                  <span class="fw-100 fs-10 text-end">
+                                    TOKENS LEFT
+                                  </span>
+                                </b>
                               </div>
-                              <div>
-                                <img
+                              <div style={{ width: 30, height: 30 }}>
+                                <CircularProgressbar
+                                  value={
+                                    ((property.tokenSupply -
+                                      property.investment) /
+                                      property.tokenSupply) *
+                                    100
+                                  }
+                                  text={`${
+                                    ((property.tokenSupply -
+                                      property.investment) /
+                                      property.tokenSupply) *
+                                    100
+                                  }%`}
+                                  counterClockwise={true}
+                                  styles={{
+                                    path: {
+                                      stroke: `rgba(123, 41, 169, ${
+                                        (((property.tokenSupply -
+                                          property.investment) /
+                                          property.tokenSupply) *
+                                          100) /
+                                        100
+                                      })`,
+                                    },
+                                  }}
+                                />
+                                {/* <img
                                   src="../assets/images/progress-left-stat.PNG"
                                   alt="..."
-                                />
+                                /> */}
                               </div>
                             </div>
                           </div>

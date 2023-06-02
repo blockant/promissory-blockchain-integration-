@@ -606,7 +606,7 @@ export default function Dashboard() {
                             {tx.hash}
                           </li>
                           <li className="list-group-item flex-fill text-success">
-                            Transaction Status
+                            Success
                           </li>
                         </ul>
                       ))}
@@ -825,8 +825,8 @@ export default function Dashboard() {
                                     {(
                                       (property.tokenSupply -
                                         property.investment) /
-                                      10 ** 18
-                                    ).toFixed(18)}
+                                      10 ** 9
+                                    ).toFixed(9)}
                                   </span>
                                   <span className="fs-10 fw-500 text-end sec-clr lh-10 tokens-txt">
                                     TOKENS LEFT
