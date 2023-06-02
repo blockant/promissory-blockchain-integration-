@@ -314,7 +314,7 @@ export default function Home() {
                             <div class="content-right fs-12 d-flex align-items-center">
                               <div class="d-flex flex-column align-items-end me-2">
                                 <span class="irr-percent fw-500 pri-clr">
-                                  {property.interestRate / 100}%
+                                  {(property.interestRate / 100).toFixed(2)}%
                                 </span>
                                 <span class="coc-percent sec-clr"> 9.9% </span>
                               </div>
