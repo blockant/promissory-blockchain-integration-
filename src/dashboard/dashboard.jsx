@@ -34,6 +34,22 @@ export default function Dashboard() {
   } = useMoralis();
   const iface = new ethers.utils.Interface(abi);
 
+  console.log("ChainID ", hexChainId);
+  //0x13881
+  async function NetworkChange(hexChainId) {
+    console.log("INSIDE NETWORK Function");
+    if (hexChainId !== 0x13881) {
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: "0x13881" }],
+        });
+      } catch (error) {
+        console.error("Failed to switch network:", error);
+      }
+    }
+  }
+
   console.log("Web3 Enabled", isWeb3Enabled);
   console.log("ACCOUNT", account);
   console.log("PROVIDER", web3);
@@ -124,6 +140,9 @@ export default function Dashboard() {
   //   }
   // });
 
+  useEffect(() => {
+    NetworkChange(hexChainId);
+  }, [hexChainId]);
   useEffect(() => {
     console.log("Hello From first Effect");
     fetchData();
@@ -591,13 +610,24 @@ export default function Dashboard() {
                   </div>
                   <div className="transactions-list">
                     {userTransactions.length > 0 &&
-                      userTransactions.map((tx) => (
+                      [...userTransactions].reverse().map((tx) => (
                         <ul className="list-group list-group-horizontal-md mb-1">
                           <li className="list-group-item flex-fill">
                             {tx.blockNumber}
                           </li>
                           <li className="list-group-item flex-fill">
-                            {iface.parseTransaction({ data: tx.data }).name}
+                            {(() => {
+                              try {
+                                return iface.parseTransaction({ data: tx.data })
+                                  .name;
+                              } catch (error) {
+                                console.error(
+                                  "Error parsing transaction:",
+                                  error
+                                );
+                                return tx.data.slice(0, 10);
+                              }
+                            })()}
                           </li>
                           <li className="list-group-item flex-fill">
                             {formatTimestamp(tx.timestamp)}
