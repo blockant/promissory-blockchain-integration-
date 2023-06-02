@@ -787,7 +787,7 @@ export default function Dashboard() {
                                 <div className="irr me-3">
                                   <span className="pri-clr fw-500">IRR: </span>
                                   <span className="black-clr fw-500">
-                                    {property.interestRate / 100}%
+                                    {(property.interestRate / 100).toFixed(2)}%
                                   </span>
                                 </div>
                                 <div className="coc">
